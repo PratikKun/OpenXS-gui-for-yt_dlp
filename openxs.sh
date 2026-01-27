@@ -978,13 +978,16 @@ private slots:
             }
         } else {
             // Video download with proper format selection for video+audio
+            // Force merge to MP4 container to avoid WebM
+            args << "--merge-output-format" << "mp4";
+            
             if (quality == "best") {
                 args << "-f" << "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best";
             } else if (quality == "worst") {
                 args << "-f" << "worstvideo[ext=mp4]+worstaudio[ext=m4a]/worstvideo+worstaudio/worst";
             } else {
                 // For specific quality, prefer mp4 container with audio
-                QString formatString = QString("bestvideo[height<=%1][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=%1]+bestaudio/best[height<=%1]").arg(quality);
+                QString formatString = QString("bestvideo[height<=%1][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=%1]+bestaudio/best[height<=%1]/best[height<=%1]").arg(quality);
                 args << "-f" << formatString;
             }
         }
