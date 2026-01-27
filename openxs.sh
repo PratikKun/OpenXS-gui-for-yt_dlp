@@ -977,12 +977,15 @@ private slots:
                 args << "--audio-quality" << wizard->getAudioQuality();
             }
         } else {
+            // Video download with proper format selection for video+audio
             if (quality == "best") {
-                args << "-f" << "best";
+                args << "-f" << "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best";
             } else if (quality == "worst") {
-                args << "-f" << "worst";
+                args << "-f" << "worstvideo[ext=mp4]+worstaudio[ext=m4a]/worstvideo+worstaudio/worst";
             } else {
-                args << "-f" << "best[height<=" + quality + "]";
+                // For specific quality, prefer mp4 container with audio
+                QString formatString = QString("bestvideo[height<=%1][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=%1]+bestaudio/best[height<=%1]").arg(quality);
+                args << "-f" << formatString;
             }
         }
         
