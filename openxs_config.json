@@ -1,0 +1,889 @@
+{
+  "_meta": {
+    "description": "OpenXS Video Downloader - Unified Configuration and Schema",
+    "version": "2.0",
+    "generated": "auto-generated from config.json and config_schema.json"
+  },
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Configuration schema for the Enhanced KDE yt-dlp GUI application",
+    "properties": {
+      "app": {
+        "description": "Application metadata and configuration",
+        "properties": {
+          "description": {
+            "description": "Brief description of the application",
+            "type": "string"
+          },
+          "icon": {
+            "description": "Icon name from system theme",
+            "type": "string"
+          },
+          "name": {
+            "description": "Display name of the application",
+            "type": "string"
+          },
+          "organization": {
+            "description": "Organization or author name",
+            "type": "string"
+          },
+          "version": {
+            "description": "Version number in semantic versioning format",
+            "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "window": {
+            "description": "Window configuration settings",
+            "properties": {
+              "default_height": {
+                "description": "Default window height in pixels",
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              },
+              "default_width": {
+                "description": "Default window width in pixels",
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              },
+              "min_height": {
+                "description": "Minimum window height in pixels",
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              },
+              "min_width": {
+                "description": "Minimum window width in pixels",
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              },
+              "title": {
+                "description": "Default window title",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "min_width",
+              "min_height",
+              "default_width",
+              "default_height"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "organization",
+          "description",
+          "icon",
+          "window"
+        ],
+        "type": "object"
+      },
+      "cmake": {
+        "description": "CMake build system configuration",
+        "properties": {
+          "cmake_minimum_version": {
+            "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+            "type": "string"
+          },
+          "cpp_standard": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "executable_name": {
+            "type": "string"
+          },
+          "project_name": {
+            "type": "string"
+          },
+          "qt_components": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "project_name",
+          "executable_name",
+          "cpp_standard",
+          "qt_components",
+          "cmake_minimum_version"
+        ],
+        "type": "object"
+      },
+      "dependencies": {
+        "additionalProperties": false,
+        "description": "Package dependencies organized by package manager",
+        "patternProperties": {
+          "^(apt|dnf|pacman|zypper)$": {
+            "properties": {
+              "additional": {
+                "description": "Additional utility packages",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "python": {
+                "description": "Python and pip packages",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "qt_libs": {
+                "description": "Qt and KDE development libraries",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "qt_libs",
+              "python",
+              "additional"
+            ],
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "gui": {
+        "description": "GUI configuration and options",
+        "properties": {
+          "audio_formats": {
+            "description": "Available audio format options",
+            "items": {
+              "description": "Available audio format options",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "best",
+                    "mp3",
+                    "aac",
+                    "flac",
+                    "ogg",
+                    "wav"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "audio_qualities": {
+            "description": "Available audio quality options",
+            "items": {
+              "description": "Available audio quality options",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "default_settings": {
+            "description": "Default GUI settings",
+            "properties": {
+              "audio_format_index": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "audio_quality_index": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "output_template": {
+                "description": "Template string with placeholders",
+                "type": "string"
+              },
+              "playlist_enabled": {
+                "type": "boolean"
+              },
+              "playlist_end": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "playlist_start": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "retry_count": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "speed_limit": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "video_quality_index": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "video_quality_index",
+              "audio_format_index",
+              "audio_quality_index",
+              "playlist_enabled",
+              "playlist_start",
+              "playlist_end",
+              "speed_limit",
+              "retry_count",
+              "output_template"
+            ],
+            "type": "object"
+          },
+          "subtitle_languages": {
+            "description": "Available subtitle languages",
+            "items": {
+              "description": "Available subtitle languages",
+              "properties": {
+                "code": {
+                  "description": "Two-letter language code (ISO 639-1)",
+                  "pattern": "^[a-z]{2}$",
+                  "type": "string"
+                },
+                "default": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "name",
+                "default"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "ui": {
+            "description": "UI layout and appearance settings",
+            "properties": {
+              "font_family": {
+                "type": "string"
+              },
+              "font_size": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "left_panel_max_width": {
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              },
+              "left_panel_min_width": {
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              },
+              "progress_update_interval": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "subtitle_list_max_height": {
+                "maximum": 10000,
+                "minimum": 100,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "left_panel_max_width",
+              "left_panel_min_width",
+              "subtitle_list_max_height",
+              "font_family",
+              "font_size",
+              "progress_update_interval"
+            ],
+            "type": "object"
+          },
+          "video_qualities": {
+            "description": "Available video quality options",
+            "items": {
+              "description": "Available video quality options",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "best",
+                    "2160",
+                    "1440",
+                    "1080",
+                    "720",
+                    "480",
+                    "360",
+                    "240",
+                    "144",
+                    "worst"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "video_qualities",
+          "audio_formats",
+          "audio_qualities",
+          "subtitle_languages",
+          "default_settings",
+          "ui"
+        ],
+        "type": "object"
+      },
+      "messages": {
+        "description": "User interface messages and formatting",
+        "properties": {
+          "colors": {
+            "description": "ANSI color codes for terminal output",
+            "properties": {
+              "blue": {
+                "description": "ANSI color code",
+                "type": "string"
+              },
+              "green": {
+                "description": "ANSI color code",
+                "type": "string"
+              },
+              "nc": {
+                "description": "ANSI color code",
+                "type": "string"
+              },
+              "red": {
+                "description": "ANSI color code",
+                "type": "string"
+              },
+              "yellow": {
+                "description": "ANSI color code",
+                "type": "string"
+              }
+            },
+            "required": [
+              "red",
+              "green",
+              "yellow",
+              "blue",
+              "nc"
+            ],
+            "type": "object"
+          },
+          "error_prefix": {
+            "type": "string"
+          },
+          "info_prefix": {
+            "type": "string"
+          },
+          "placeholders": {
+            "description": "Placeholder text for input fields",
+            "properties": {
+              "custom_args": {
+                "type": "string"
+              },
+              "output_template": {
+                "description": "Template string with placeholders",
+                "type": "string"
+              },
+              "url_input": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url_input",
+              "output_template",
+              "custom_args"
+            ],
+            "type": "object"
+          },
+          "skip_prefix": {
+            "type": "string"
+          },
+          "status_messages": {
+            "description": "Status and notification messages",
+            "properties": {
+              "app_ready": {
+                "type": "string"
+              },
+              "build_complete": {
+                "type": "string"
+              },
+              "deps_installed": {
+                "type": "string"
+              },
+              "download_complete": {
+                "type": "string"
+              },
+              "download_failed": {
+                "type": "string"
+              },
+              "download_starting": {
+                "type": "string"
+              },
+              "download_stopped": {
+                "type": "string"
+              },
+              "starting": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "starting",
+              "deps_installed",
+              "build_complete",
+              "app_ready",
+              "download_starting",
+              "download_complete",
+              "download_failed",
+              "download_stopped"
+            ],
+            "type": "object"
+          },
+          "warning_prefix": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "info_prefix",
+          "warning_prefix",
+          "error_prefix",
+          "skip_prefix",
+          "colors",
+          "status_messages",
+          "placeholders"
+        ],
+        "type": "object"
+      },
+      "paths": {
+        "description": "File and directory path configurations",
+        "properties": {
+          "app_dir": {
+            "description": "Application data directory path",
+            "type": "string"
+          },
+          "build_dir": {
+            "description": "Build output directory path",
+            "type": "string"
+          },
+          "config_dir": {
+            "description": "Configuration directory path",
+            "type": "string"
+          },
+          "default_download_dir": {
+            "description": "Default download directory path",
+            "type": "string"
+          },
+          "state_file": {
+            "description": "Installation state file path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "config_dir",
+          "state_file",
+          "app_dir",
+          "build_dir",
+          "default_download_dir"
+        ],
+        "type": "object"
+      }
+    },
+    "required": [
+      "app",
+      "paths",
+      "dependencies",
+      "gui",
+      "messages",
+      "cmake"
+    ],
+    "title": "KDE yt-dlp GUI Configuration",
+    "type": "object"
+  },
+  "config": {
+    "app": {
+      "name": "OpenXS Video Downloader (YouTube)",
+      "version": "2.0",
+      "organization": "OpenXS",
+      "description": "A comprehensive Qt/KDE-based graphical interface for yt-dlp",
+      "icon": "applications-multimedia",
+      "window": {
+        "title": "OpenXS - Advanced Video Downloader",
+        "min_width": 1000,
+        "min_height": 700,
+        "default_width": 1200,
+        "default_height": 800
+      }
+    },
+    "paths": {
+      "config_dir": "$HOME/.config/openxs_video_downloader",
+      "state_file": "$HOME/.config/openxs_video_downloader/install_state.json",
+      "app_dir": "$HOME/.local/share/openxs_video_downloader",
+      "build_dir": "$HOME/.local/share/openxs_video_downloader/build",
+      "default_download_dir": "$HOME/Downloads"
+    },
+    "dependencies": {
+      "apt": {
+        "qt_libs": [
+          "qtbase5-dev",
+          "qttools5-dev",
+          "qttools5-dev-tools",
+          "libqt5widgets5",
+          "libqt5gui5",
+          "libqt5core5a",
+          "qt5-qmake",
+          "cmake",
+          "build-essential",
+          "libkf5coreaddons-dev",
+          "libkf5i18n-dev",
+          "libkf5configwidgets-dev",
+          "libkf5widgetsaddons-dev"
+        ],
+        "python": [
+          "python3",
+          "python3-pip",
+          "python3-venv"
+        ],
+        "additional": [
+          "ffmpeg",
+          "git",
+          "curl",
+          "wget",
+          "libnotify-bin"
+        ]
+      },
+      "dnf": {
+        "qt_libs": [
+          "qt5-qtbase-devel",
+          "qt5-qttools-devel",
+          "cmake",
+          "gcc-c++",
+          "kf5-kcoreaddons-devel",
+          "kf5-ki18n-devel",
+          "kf5-kconfigwidgets-devel",
+          "kf5-kwidgetsaddons-devel"
+        ],
+        "python": [
+          "python3",
+          "python3-pip"
+        ],
+        "additional": [
+          "ffmpeg",
+          "git",
+          "curl",
+          "wget",
+          "libnotify"
+        ]
+      },
+      "pacman": {
+        "qt_libs": [
+          "qt5-base",
+          "qt5-tools",
+          "cmake",
+          "base-devel",
+          "kcoreaddons",
+          "ki18n",
+          "kconfigwidgets",
+          "kwidgetsaddons"
+        ],
+        "python": [
+          "python",
+          "python-pip"
+        ],
+        "additional": [
+          "ffmpeg",
+          "git",
+          "curl",
+          "wget",
+          "libnotify"
+        ]
+      },
+      "zypper": {
+        "qt_libs": [
+          "libqt5-qtbase-devel",
+          "libqt5-qttools-devel",
+          "cmake",
+          "gcc-c++",
+          "kcoreaddons-devel",
+          "ki18n-devel",
+          "kconfigwidgets-devel",
+          "kwidgetsaddons-devel"
+        ],
+        "python": [
+          "python3",
+          "python3-pip"
+        ],
+        "additional": [
+          "ffmpeg",
+          "git",
+          "curl",
+          "wget",
+          "libnotify-tools"
+        ]
+      }
+    },
+    "gui": {
+      "video_qualities": [
+        {
+          "name": "Best Available",
+          "value": "best"
+        },
+        {
+          "name": "4K (2160p)",
+          "value": "2160"
+        },
+        {
+          "name": "1440p",
+          "value": "1440"
+        },
+        {
+          "name": "1080p",
+          "value": "1080"
+        },
+        {
+          "name": "720p",
+          "value": "720"
+        },
+        {
+          "name": "480p",
+          "value": "480"
+        },
+        {
+          "name": "360p",
+          "value": "360"
+        },
+        {
+          "name": "240p",
+          "value": "240"
+        },
+        {
+          "name": "144p",
+          "value": "144"
+        },
+        {
+          "name": "Worst Available",
+          "value": "worst"
+        }
+      ],
+      "audio_formats": [
+        {
+          "name": "Best",
+          "value": "best"
+        },
+        {
+          "name": "MP3",
+          "value": "mp3"
+        },
+        {
+          "name": "AAC",
+          "value": "aac"
+        },
+        {
+          "name": "FLAC",
+          "value": "flac"
+        },
+        {
+          "name": "OGG",
+          "value": "ogg"
+        },
+        {
+          "name": "WAV",
+          "value": "wav"
+        }
+      ],
+      "audio_qualities": [
+        {
+          "name": "Best",
+          "value": "0"
+        },
+        {
+          "name": "320k",
+          "value": "320"
+        },
+        {
+          "name": "256k",
+          "value": "256"
+        },
+        {
+          "name": "192k",
+          "value": "192"
+        },
+        {
+          "name": "128k",
+          "value": "128"
+        },
+        {
+          "name": "96k",
+          "value": "96"
+        }
+      ],
+      "subtitle_languages": [
+        {
+          "code": "en",
+          "name": "English",
+          "default": true
+        },
+        {
+          "code": "es",
+          "name": "Spanish",
+          "default": false
+        },
+        {
+          "code": "fr",
+          "name": "French",
+          "default": false
+        },
+        {
+          "code": "de",
+          "name": "German",
+          "default": false
+        },
+        {
+          "code": "it",
+          "name": "Italian",
+          "default": false
+        },
+        {
+          "code": "pt",
+          "name": "Portuguese",
+          "default": false
+        },
+        {
+          "code": "ru",
+          "name": "Russian",
+          "default": false
+        },
+        {
+          "code": "ja",
+          "name": "Japanese",
+          "default": false
+        },
+        {
+          "code": "ko",
+          "name": "Korean",
+          "default": false
+        },
+        {
+          "code": "zh",
+          "name": "Chinese",
+          "default": false
+        },
+        {
+          "code": "ar",
+          "name": "Arabic",
+          "default": false
+        },
+        {
+          "code": "hi",
+          "name": "Hindi",
+          "default": false
+        },
+        {
+          "code": "tr",
+          "name": "Turkish",
+          "default": false
+        },
+        {
+          "code": "pl",
+          "name": "Polish",
+          "default": false
+        },
+        {
+          "code": "nl",
+          "name": "Dutch",
+          "default": false
+        }
+      ],
+      "default_settings": {
+        "video_quality_index": 3,
+        "audio_format_index": 1,
+        "audio_quality_index": 0,
+        "playlist_enabled": true,
+        "playlist_start": 1,
+        "playlist_end": 0,
+        "speed_limit": 1000,
+        "retry_count": 10,
+        "output_template": "%(title)s.%(ext)s"
+      },
+      "ui": {
+        "left_panel_max_width": 400,
+        "left_panel_min_width": 350,
+        "subtitle_list_max_height": 150,
+        "font_family": "monospace",
+        "font_size": 9,
+        "progress_update_interval": 100
+      }
+    },
+    "messages": {
+      "info_prefix": "[INFO]",
+      "warning_prefix": "[WARNING]",
+      "error_prefix": "[ERROR]",
+      "skip_prefix": "[SKIP]",
+      "colors": {
+        "red": "\\033[0;31m",
+        "green": "\\033[0;32m",
+        "yellow": "\\033[1;33m",
+        "blue": "\\033[0;34m",
+        "nc": "\\033[0m"
+      },
+      "status_messages": {
+        "starting": "Starting OpenXS Video Downloader setup and launch...",
+        "deps_installed": "All dependencies installed successfully!",
+        "build_complete": "Build completed successfully",
+        "app_ready": "OpenXS Video Downloader ready to launch",
+        "download_starting": "=== Starting Download ===",
+        "download_complete": "=== Download Completed Successfully! ===",
+        "download_failed": "=== Download Failed ===",
+        "download_stopped": "=== Download Stopped by User ==="
+      },
+      "placeholders": {
+        "url_input": "Enter YouTube, Vimeo, or other supported URL...",
+        "output_template": "%(title)s.%(ext)s",
+        "custom_args": "Additional yt-dlp arguments..."
+      }
+    },
+    "cmake": {
+      "project_name": "openxs_video_downloader",
+      "executable_name": "openxs_video_downloader",
+      "cpp_standard": 17,
+      "qt_components": [
+        "Core",
+        "Widgets"
+      ],
+      "cmake_minimum_version": "3.16"
+    }
+  }
+}
