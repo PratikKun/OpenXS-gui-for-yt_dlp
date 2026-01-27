@@ -1,0 +1,76 @@
+# Maintainer: Your Name <your.email@example.com>
+pkgname=openxs-video-downloader
+pkgver=2.0
+pkgrel=1
+pkgdesc="Qt GUI for yt-dlp with step-by-step wizard interface"
+arch=('x86_64')
+url="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp"
+license=('GPL3')
+depends=('qt5-base' 'qt5-tools' 'python' 'python-pip' 'yt-dlp' 'ffmpeg')
+makedepends=('cmake' 'git')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/archive/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    
+    # Download config if not present
+    if [[ ! -f openxs_config.json ]]; then
+        curl -sSL "https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/openxs_config.json" -o openxs_config.json
+    fi
+    
+    # Build application
+    chmod +x openxs.sh
+    ./openxs.sh build
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    
+    # Get paths from config
+    APP_DIR=$(eval echo "$(python -c "
+import json
+with open('openxs_config.json', 'r') as f:
+    data = json.load(f)
+print(data['config']['paths']['app_dir'])
+")")
+    
+    BUILD_DIR=$(eval echo "$(python -c "
+import json
+with open('openxs_config.json', 'r') as f:
+    data = json.load(f)
+print(data['config']['paths']['build_dir'])
+")")
+    
+    EXECUTABLE_NAME=$(python -c "
+import json
+with open('openxs_config.json', 'r') as f:
+    data = json.load(f)
+print(data['config']['cmake']['executable_name'])
+")
+    
+    # Install binary
+    install -Dm755 "$BUILD_DIR/$EXECUTABLE_NAME" "$pkgdir/usr/bin/yt-dlp-xs"
+    
+    # Install config
+    install -Dm644 openxs_config.json "$pkgdir/etc/openxs/openxs_config.json"
+    
+    # Install desktop entry
+    install -Dm644 /dev/stdin "$pkgdir/usr/share/applications/openxs-video-downloader.desktop" << EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=OpenXS Video Downloader
+Comment=Download videos with step-by-step wizard interface
+Exec=/usr/bin/yt-dlp-xs
+Icon=applications-multimedia
+Terminal=false
+Categories=AudioVideo;Video;Utility;
+Keywords=youtube;video;download;yt-dlp;
+StartupNotify=true
+MimeType=x-scheme-handler/http;x-scheme-handler/https;
+EOF
+    
+    # Install documentation
+    install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}

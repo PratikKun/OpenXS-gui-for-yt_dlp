@@ -1,0 +1,107 @@
+name: openxs-video-downloader
+base: core20
+version: '2.0'
+summary: Qt GUI for yt-dlp with step-by-step wizard interface
+description: |
+  OpenXS Video Downloader is a comprehensive Qt/KDE-based graphical interface 
+  for yt-dlp with a step-by-step wizard interface. It supports downloading 
+  videos from YouTube and other platforms with options for quality selection, 
+  playlist downloads, subtitle extraction, and audio-only downloads.
+
+grade: stable
+confinement: strict
+
+architectures:
+  - build-on: amd64
+
+apps:
+  openxs-video-downloader:
+    command: bin/yt-dlp-xs
+    desktop: share/applications/openxs-video-downloader.desktop
+    plugs:
+      - home
+      - network
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - audio-playback
+      - removable-media
+
+parts:
+  openxs:
+    plugin: nil
+    source: https://github.com/PratikKun/OpenXS-gui-for-yt_dlp.git
+    source-tag: v2.0
+    build-packages:
+      - qtbase5-dev
+      - qttools5-dev
+      - cmake
+      - build-essential
+      - python3
+      - python3-pip
+      - curl
+      - wget
+    stage-packages:
+      - libqt5widgets5
+      - libqt5gui5
+      - libqt5core5a
+      - python3
+      - python3-pip
+      - ffmpeg
+    override-build: |
+      # Download config
+      curl -sSL "https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/openxs_config.json" -o openxs_config.json
+      
+      # Install yt-dlp
+      pip3 install yt-dlp
+      
+      # Build application
+      chmod +x openxs.sh
+      ./openxs.sh build
+      
+      # Get paths from config
+      APP_DIR=$(eval echo "$(python3 -c "
+import json
+with open('openxs_config.json', 'r') as f:
+    data = json.load(f)
+print(data['config']['paths']['app_dir'])
+")")
+      
+      BUILD_DIR=$(eval echo "$(python3 -c "
+import json
+with open('openxs_config.json', 'r') as f:
+    data = json.load(f)
+print(data['config']['paths']['build_dir'])
+")")
+      
+      EXECUTABLE_NAME=$(python3 -c "
+import json
+with open('openxs_config.json', 'r') as f:
+    data = json.load(f)
+print(data['config']['cmake']['executable_name'])
+")
+      
+      # Install files
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      mkdir -p $SNAPCRAFT_PART_INSTALL/etc/openxs
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share/applications
+      
+      cp "$BUILD_DIR/$EXECUTABLE_NAME" $SNAPCRAFT_PART_INSTALL/bin/yt-dlp-xs
+      cp openxs_config.json $SNAPCRAFT_PART_INSTALL/etc/openxs/
+      
+      # Create desktop file
+      cat > $SNAPCRAFT_PART_INSTALL/share/applications/openxs-video-downloader.desktop << EOF
+      [Desktop Entry]
+      Version=1.0
+      Type=Application
+      Name=OpenXS Video Downloader
+      Comment=Download videos with step-by-step wizard interface
+      Exec=openxs-video-downloader
+      Icon=applications-multimedia
+      Terminal=false
+      Categories=AudioVideo;Video;Utility;
+      Keywords=youtube;video;download;yt-dlp;
+      StartupNotify=true
+      MimeType=x-scheme-handler/http;x-scheme-handler/https;
+      EOF

@@ -1,0 +1,56 @@
+app-id: org.openxs.VideoDownloader
+runtime: org.kde.Platform
+runtime-version: '5.15-21.08'
+sdk: org.kde.Sdk
+command: yt-dlp-xs
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+  - --filesystem=xdg-download
+  - --talk-name=org.freedesktop.Notifications
+
+modules:
+  - name: python3-yt-dlp
+    buildsystem: simple
+    build-commands:
+      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+        --prefix=${FLATPAK_DEST} "yt-dlp" --no-build-isolation
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/source/y/yt-dlp/yt-dlp-2023.12.30.tar.gz
+        sha256: d5ebb1e4e33bb1c2b5b0b2c5b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0
+
+  - name: openxs-video-downloader
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: git
+        url: https://github.com/PratikKun/OpenXS-gui-for-yt_dlp.git
+        tag: v2.0
+      - type: file
+        url: https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/openxs_config.json
+        dest-filename: openxs_config.json
+    build-commands:
+      - chmod +x openxs.sh
+      - ./openxs.sh build
+      - install -Dm755 ~/.local/share/openxs_video_downloader/build/openxs_video_downloader ${FLATPAK_DEST}/bin/yt-dlp-xs
+      - install -Dm644 openxs_config.json ${FLATPAK_DEST}/etc/openxs/openxs_config.json
+      - install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/applications/org.openxs.VideoDownloader.desktop << EOF
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=OpenXS Video Downloader
+        Comment=Download videos with step-by-step wizard interface
+        Exec=yt-dlp-xs
+        Icon=org.openxs.VideoDownloader
+        Terminal=false
+        Categories=AudioVideo;Video;Utility;
+        Keywords=youtube;video;download;yt-dlp;
+        StartupNotify=true
+        MimeType=x-scheme-handler/http;x-scheme-handler/https;
+        EOF

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="https://openxs.netlify.app/icon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenXS Video Downloader - Linux Video Downloader</title>
+    <meta name="description" content="OpenXS Video Downloader - Simple Qt GUI for yt-dlp with wizard interface for Linux.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: #0f172a;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #1e293b;
+            padding: 1rem 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #cbd5e1;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #60a5fa;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #94a3b8;
+        }
+
+        .install-command {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            color: #22c55e;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #60a5fa;
+            border: 1px solid #60a5fa;
+        }
+
+        .btn-secondary:hover {
+            background: #60a5fa;
+            color: #0f172a;
+        }
+
+        /* Sections */
+        section {
+            padding: 40px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #f1f5f9;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .feature h3 {
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Installation */
+        .code-block {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block .comment {
+            color: #64748b;
+        }
+
+        .code-block .command {
+            color: #22c55e;
+        }
+
+        /* Package managers */
+        .package-managers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .package-manager {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            text-align: center;
+        }
+
+        .package-manager h4 {
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e293b;
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid #334155;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #60a5fa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .package-managers {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">OpenXS</div>
+                <ul class="nav-links">
+                    <li><a href="#install">Install</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#packages">Packages</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>OpenXS Video Downloader</h1>
+                <p>Simple Qt GUI for yt-dlp with step-by-step wizard interface</p>
+                
+                <div class="install-command">
+                    curl -sSL https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh | bash
+                </div>
+                
+                <div>
+                    <a href="#install" class="btn btn-primary">Quick Install</a>
+                    <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp" class="btn btn-secondary">GitHub</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="container">
+            <h2 class="section-title">One-Command Installation</h2>
+            <p>Installs to system, creates desktop entry, and adds to application menu:</p>
+            
+            <div class="code-block">
+                <span class="comment"># Install OpenXS Video Downloader</span><br>
+                <span class="command">curl -sSL https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh | bash</span>
+            </div>
+
+            <p>Or download and run manually:</p>
+            <div class="code-block">
+                <span class="command">wget https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh</span><br>
+                <span class="command">chmod +x install.sh</span><br>
+                <span class="command">./install.sh</span>
+            </div>
+
+            <h3 style="margin-top: 2rem; color: #f1f5f9;">What it does:</h3>
+            <ul style="margin-top: 1rem; color: #cbd5e1;">
+                <li>✓ Detects your Linux distribution automatically</li>
+                <li>✓ Installs all required dependencies (Qt5, yt-dlp, etc.)</li>
+                <li>✓ Builds and installs the application to /usr/local/bin</li>
+                <li>✓ Creates desktop entry for all desktop environments</li>
+                <li>✓ Adds to application menu under "Utilities"</li>
+                <li>✓ Works with GNOME, KDE, XFCE, MATE, Cinnamon, and more</li>
+            </ul>
+        </section>
+
+        <section id="features" class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3>Step-by-Step Wizard</h3>
+                    <p>Simple 7-step wizard guides you through video download options</p>
+                </div>
+                <div class="feature">
+                    <h3>Multiple Formats</h3>
+                    <p>Download video in any quality or extract audio in MP3, FLAC, etc.</p>
+                </div>
+                <div class="feature">
+                    <h3>Playlist Support</h3>
+                    <p>Download entire playlists with range and order options</p>
+                </div>
+                <div class="feature">
+                    <h3>Subtitle Downloads</h3>
+                    <p>Download subtitles in 15+ languages</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="packages" class="container">
+            <h2 class="section-title">Package Manager Support</h2>
+            <p>Available through multiple package managers and repositories:</p>
+            
+            <div class="package-managers">
+                <div class="package-manager">
+                    <h4>AUR (Arch)</h4>
+                    <div class="code-block">yay -S openxs-video-downloader</div>
+                </div>
+                <div class="package-manager">
+                    <h4>Flatpak</h4>
+                    <div class="code-block">flatpak install openxs</div>
+                </div>
+                <div class="package-manager">
+                    <h4>Snap</h4>
+                    <div class="code-block">snap install openxs</div>
+                </div>
+                <div class="package-manager">
+                    <h4>AppImage</h4>
+                    <div class="code-block">wget openxs.AppImage</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem; color: #f1f5f9;">Supported Distributions:</h3>
+            <div class="features">
+                <div class="feature">
+                    <h3>Debian/Ubuntu</h3>
+                    <p>apt package manager support</p>
+                </div>
+                <div class="feature">
+                    <h3>Fedora/RHEL</h3>
+                    <p>dnf/yum package manager support</p>
+                </div>
+                <div class="feature">
+                    <h3>Arch Linux</h3>
+                    <p>pacman and AUR support</p>
+                </div>
+                <div class="feature">
+                    <h3>openSUSE</h3>
+                    <p>zypper package manager support</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2 class="section-title">Usage</h2>
+            <p>After installation, launch from:</p>
+            <ul style="margin-top: 1rem; color: #cbd5e1;">
+                <li>• Application menu → Utilities → OpenXS Video Downloader</li>
+                <li>• Desktop shortcut (if created)</li>
+                <li>• Terminal: <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px;">yt-dlp-xs</code></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp">GitHub</a>
+                <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/issues">Issues</a>
+                <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/releases">Releases</a>
+            </div>
+            <p>&copy; 2026 OpenXS Video Downloader. Open source project for Linux.</p>
+        </div>
+    </footer>
+</body>
+</html>
