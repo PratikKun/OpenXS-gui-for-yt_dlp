@@ -2,7 +2,7 @@
 
 A comprehensive Qt/KDE-based graphical interface for yt-dlp with step-by-step wizard interface for easy video downloading on Linux.
 
-![OpenXS Video Downloader](https://img.shields.io/badge/OpenXS-Video%20Downloader-blue)
+![OpenXS Video Downloader](https://img.shields.io/badge/OpenXS-Video%20Downloader-blue)(https://pratikkun.github.io/OpenXS-gui-for-yt_dlp/)
 ![License](https://img.shields.io/badge/license-GPL--3.0-green)
 ![Platform](https://img.shields.io/badge/platform-Linux-lightgrey)
 ![Qt](https://img.shields.io/badge/Qt-5.15+-blue)
@@ -145,7 +145,9 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 
 ## Screenshots
 
-*Screenshots will be added soon*
+<img width="1503" height="873" alt="image" src="https://github.com/user-attachments/assets/d6fbd0eb-cf2e-4593-962f-7cd3c28f871b" />
+
+
 
 ---
 
