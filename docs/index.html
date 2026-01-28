@@ -1,12 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="shortcut icon" href="https://openxs.netlify.app/icon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenXS Video Downloader - Linux Video Downloader</title>
-    <meta name="description" content="OpenXS Video Downloader - Simple Qt GUI for yt-dlp with wizard interface for Linux.">
+    <title>OpenXS Video Downloader - Modern Video Downloader for Linux & Windows</title>
+    <meta name="description" content="OpenXS Video Downloader - A modern, user-friendly video downloader with step-by-step wizard interface. Download from YouTube, Vimeo, and more with ease.">
+    <meta name="keywords" content="video downloader, youtube downloader, yt-dlp gui, linux video downloader, open source">
+    <meta name="author" content="OpenXS Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pratikkun.github.io/OpenXS-gui-for-yt_dlp/">
+    <meta property="og:title" content="OpenXS Video Downloader">
+    <meta property="og:description" content="Modern video downloader with step-by-step wizard interface">
+    <meta property="og:image" content="https://pratikkun.github.io/OpenXS-gui-for-yt_dlp/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://pratikkun.github.io/OpenXS-gui-for-yt_dlp/">
+    <meta property="twitter:title" content="OpenXS Video Downloader">
+    <meta property="twitter:description" content="Modern video downloader with step-by-step wizard interface">
+    <meta property="twitter:image" content="https://pratikkun.github.io/OpenXS-gui-for-yt_dlp/og-image.png">
+    
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎥</text></svg>">
+    
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,23 +49,28 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: #e2e8f0;
-            background: #0f172a;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-
         /* Header */
         header {
-            background: #1e293b;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             padding: 1rem 0;
-            border-bottom: 1px solid #334155;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .header-content {
@@ -40,194 +80,315 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             font-size: 1.5rem;
             font-weight: bold;
-            color: #60a5fa;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #cbd5e1;
-            transition: color 0.3s;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
         }
 
         .nav-links a:hover {
-            color: #60a5fa;
+            color: var(--primary-color);
         }
 
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
         /* Hero Section */
         .hero {
-            padding: 60px 0;
+            padding: 120px 0 80px;
             text-align: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23334155" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
-            color: #f1f5f9;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .hero p {
-            font-size: 1.1rem;
+        .hero .subtitle {
+            font-size: 1.3rem;
             margin-bottom: 2rem;
-            color: #94a3b8;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .install-command {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 2rem 0;
-            font-family: 'Courier New', monospace;
-            color: #22c55e;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            color: var(--success-color);
             font-size: 1.1rem;
-            text-align: center;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
         }
 
+        .install-command::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             padding: 12px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            margin: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
         .btn-primary {
-            background: #3b82f6;
+            background: var(--primary-color);
             color: white;
         }
 
         .btn-primary:hover {
-            background: #2563eb;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
         }
 
         .btn-secondary {
             background: transparent;
-            color: #60a5fa;
-            border: 1px solid #60a5fa;
+            color: var(--text-primary);
+            border-color: var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: #60a5fa;
-            color: #0f172a;
+            background: var(--bg-secondary);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
         }
 
-        /* Sections */
-        section {
-            padding: 40px 0;
-            border-bottom: 1px solid #1e293b;
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: var(--bg-secondary);
         }
 
         .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: #f1f5f9;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
         }
 
-        /* Features */
-        .features {
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .feature-card {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Package Managers */
+        .package-managers {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .feature {
-            background: #1e293b;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
-
-        .feature h3 {
-            color: #60a5fa;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Installation */
-        .code-block {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            margin: 1rem 0;
-            overflow-x: auto;
-        }
-
-        .code-block .comment {
-            color: #64748b;
-        }
-
-        .code-block .command {
-            color: #22c55e;
-        }
-
-        /* Package managers */
-        .package-managers {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+            margin-top: 3rem;
         }
 
         .package-manager {
-            background: #1e293b;
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             text-align: center;
+            transition: all 0.3s ease;
+        }
+        .package-manager:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
         }
 
         .package-manager h4 {
-            color: #60a5fa;
-            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status.available {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success-color);
+        }
+
+        .status.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
         }
 
         /* Footer */
         footer {
-            background: #1e293b;
-            padding: 2rem 0;
+            background: var(--bg-primary);
+            padding: 3rem 0 2rem;
+            border-top: 1px solid var(--border-color);
             text-align: center;
-            border-top: 1px solid #334155;
         }
 
         .footer-links {
             display: flex;
             justify-content: center;
             gap: 2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
         .footer-links a {
-            color: #94a3b8;
+            color: var(--text-secondary);
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
-            color: #60a5fa;
+            color: var(--primary-color);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .nav-links {
                 display: none;
             }
 
-            .features {
+            .features-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -241,11 +402,15 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">OpenXS</div>
+                <a href="#" class="logo">
+                    <span class="logo-icon">🎥</span>
+                    OpenXS
+                </a>
                 <ul class="nav-links">
-                    <li><a href="#install">Install</a></li>
                     <li><a href="#features">Features</a></li>
+                    <li><a href="#install">Install</a></li>
                     <li><a href="#packages">Packages</a></li>
+                    <li><a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp">GitHub</a></li>
                 </ul>
             </div>
         </div>
@@ -254,133 +419,232 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1>OpenXS Video Downloader</h1>
-                <p>Simple Qt GUI for yt-dlp with step-by-step wizard interface</p>
+                <div class="hero-content">
+                    <h1>OpenXS Video Downloader</h1>
+                    <p class="subtitle">Modern video downloader with step-by-step wizard interface. Download from YouTube, Vimeo, and more with ease.</p>
+                    
+                    <div class="install-command">
+                        curl -sSL https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh | bash
+                    </div>
+                    
+                    <div class="cta-buttons">
+                        <a href="#install" class="btn btn-primary">
+                            🚀 Quick Install
+                        </a>
+                        <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp" class="btn btn-secondary">
+                            📖 View on GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose OpenXS?</h2>
+                <p class="section-subtitle">A modern approach to video downloading with user-friendly design and powerful features</p>
                 
-                <div class="install-command">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon">🧙‍♂️</span>
+                        <h3>Step-by-Step Wizard</h3>
+                        <p>Intuitive 7-step wizard guides you through all options. No overwhelming forms or complex settings.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🎯</span>
+                        <h3>Smart Format Selection</h3>
+                        <p>Choose from MP4, MKV, AVI, MOV, WebM, FLV. Automatically combines best video+audio streams.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🎵</span>
+                        <h3>Professional Audio</h3>
+                        <p>Extract high-quality audio in MP3, AAC, FLAC, OGG, WAV with bitrate control from 96k to 320k.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📋</span>
+                        <h3>Playlist Management</h3>
+                        <p>Download entire playlists with range selection, reverse order, and organized folder structure.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🌍</span>
+                        <h3>Subtitle Support</h3>
+                        <p>Download subtitles in 15+ languages with auto-generated fallback and embedding options.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">⚡</span>
+                        <h3>Advanced Features</h3>
+                        <p>Speed limiting, retry logic, thumbnails, metadata extraction, and custom yt-dlp arguments.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="container" style="padding: 80px 0;">
+            <h2 class="section-title">Quick Installation</h2>
+            <p class="section-subtitle">One command installs everything - dependencies, builds the app, and creates desktop integration</p>
+            
+            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 2rem;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">🐧 Linux (Recommended)</h3>
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; font-family: monospace; color: var(--success-color); margin-bottom: 1rem;">
                     curl -sSL https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh | bash
                 </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">After installation, launch with: <code style="background: var(--bg-primary); padding: 2px 6px; border-radius: 3px; color: var(--success-color);">yt-dlp-xs</code></p>
                 
-                <div>
-                    <a href="#install" class="btn btn-primary">Quick Install</a>
-                    <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp" class="btn btn-secondary">GitHub</a>
+                <h3 style="color: var(--text-primary); margin: 2rem 0 1rem;">🪟 Windows</h3>
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; font-family: monospace; color: var(--success-color); margin-bottom: 1rem;">
+                    curl -O https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/windows/install.bat<br>
+                    install.bat
                 </div>
+                <p style="color: var(--text-secondary);">Requirements: Windows 10/11 with Python 3.6+</p>
             </div>
         </section>
 
-        <section id="install" class="container">
-            <h2 class="section-title">One-Command Installation</h2>
-            <p>Installs to system, creates desktop entry, and adds to application menu:</p>
-            
-            <div class="code-block">
-                <span class="comment"># Install OpenXS Video Downloader</span><br>
-                <span class="command">curl -sSL https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh | bash</span>
-            </div>
-
-            <p>Or download and run manually:</p>
-            <div class="code-block">
-                <span class="command">wget https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/install.sh</span><br>
-                <span class="command">chmod +x install.sh</span><br>
-                <span class="command">./install.sh</span>
-            </div>
-
-            <h3 style="margin-top: 2rem; color: #f1f5f9;">What it does:</h3>
-            <ul style="margin-top: 1rem; color: #cbd5e1;">
-                <li>✓ Detects your Linux distribution automatically</li>
-                <li>✓ Installs all required dependencies (Qt5, yt-dlp, etc.)</li>
-                <li>✓ Builds and installs the application to /usr/local/bin</li>
-                <li>✓ Creates desktop entry for all desktop environments</li>
-                <li>✓ Adds to application menu under "Utilities"</li>
-                <li>✓ Works with GNOME, KDE, XFCE, MATE, Cinnamon, and more</li>
-            </ul>
-        </section>
-
-        <section id="features" class="container">
-            <h2 class="section-title">Features</h2>
-            <div class="features">
-                <div class="feature">
-                    <h3>Step-by-Step Wizard</h3>
-                    <p>Simple 7-step wizard guides you through video download options</p>
-                </div>
-                <div class="feature">
-                    <h3>Multiple Formats</h3>
-                    <p>Download video in any quality or extract audio in MP3, FLAC, etc.</p>
-                </div>
-                <div class="feature">
-                    <h3>Playlist Support</h3>
-                    <p>Download entire playlists with range and order options</p>
-                </div>
-                <div class="feature">
-                    <h3>Subtitle Downloads</h3>
-                    <p>Download subtitles in 15+ languages</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="packages" class="container">
+        <section id="packages" class="container" style="padding: 80px 0;">
             <h2 class="section-title">Package Manager Support</h2>
-            <p>Available through multiple package managers and repositories:</p>
+            <p class="section-subtitle">Available through multiple package managers and distribution methods</p>
             
             <div class="package-managers">
                 <div class="package-manager">
-                    <h4>AUR (Arch)</h4>
-                    <div class="code-block">yay -S openxs-video-downloader</div>
+                    <h4>Arch Linux (AUR)</h4>
+                    <div style="background: var(--bg-primary); padding: 0.8rem; border-radius: 6px; font-family: monospace; color: var(--success-color); margin: 1rem 0;">
+                        yay -S openxs-video-downloader
+                    </div>
+                    <span class="status available">✅ Available</span>
                 </div>
                 <div class="package-manager">
                     <h4>Flatpak</h4>
-                    <div class="code-block">flatpak install openxs</div>
+                    <div style="background: var(--bg-primary); padding: 0.8rem; border-radius: 6px; font-family: monospace; color: var(--success-color); margin: 1rem 0;">
+                        flatpak install org.openxs.VideoDownloader
+                    </div>
+                    <span class="status pending">🔄 Pending</span>
                 </div>
                 <div class="package-manager">
                     <h4>Snap</h4>
-                    <div class="code-block">snap install openxs</div>
+                    <div style="background: var(--bg-primary); padding: 0.8rem; border-radius: 6px; font-family: monospace; color: var(--success-color); margin: 1rem 0;">
+                        snap install openxs-video-downloader
+                    </div>
+                    <span class="status pending">🔄 Pending</span>
                 </div>
                 <div class="package-manager">
                     <h4>AppImage</h4>
-                    <div class="code-block">wget openxs.AppImage</div>
-                </div>
-            </div>
-
-            <h3 style="margin-top: 2rem; color: #f1f5f9;">Supported Distributions:</h3>
-            <div class="features">
-                <div class="feature">
-                    <h3>Debian/Ubuntu</h3>
-                    <p>apt package manager support</p>
-                </div>
-                <div class="feature">
-                    <h3>Fedora/RHEL</h3>
-                    <p>dnf/yum package manager support</p>
-                </div>
-                <div class="feature">
-                    <h3>Arch Linux</h3>
-                    <p>pacman and AUR support</p>
-                </div>
-                <div class="feature">
-                    <h3>openSUSE</h3>
-                    <p>zypper package manager support</p>
+                    <div style="background: var(--bg-primary); padding: 0.8rem; border-radius: 6px; font-family: monospace; color: var(--success-color); margin: 1rem 0;">
+                        Download from Releases
+                    </div>
+                    <span class="status available">✅ Available</span>
                 </div>
             </div>
         </section>
 
-        <section class="container">
-            <h2 class="section-title">Usage</h2>
-            <p>After installation, launch from:</p>
-            <ul style="margin-top: 1rem; color: #cbd5e1;">
-                <li>• Application menu → Utilities → OpenXS Video Downloader</li>
-                <li>• Desktop shortcut (if created)</li>
-                <li>• Terminal: <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px;">yt-dlp-xs</code></li>
-            </ul>
+        <section class="container" style="padding: 80px 0; text-align: center;">
+            <h2 class="section-title">Supported Platforms</h2>
+            <div class="features-grid" style="margin-top: 2rem;">
+                <div class="feature-card">
+                    <span class="feature-icon">🐧</span>
+                    <h3>Linux Distributions</h3>
+                    <p>Ubuntu, Debian, Fedora, Arch, openSUSE, and more with automatic dependency detection</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🖥️</span>
+                    <h3>Desktop Environments</h3>
+                    <p>KDE, GNOME, XFCE, MATE, Cinnamon, LXQt with proper desktop integration</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🪟</span>
+                    <h3>Windows Support</h3>
+                    <p>Windows 10/11 with command-line interface and menu-driven downloads</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container" style="padding: 60px 0; text-align: center; background: var(--bg-secondary); margin: 0 -20px; padding-left: 20px; padding-right: 20px;">
+            <h2 style="color: var(--text-primary); margin-bottom: 2rem;">Ready to Get Started?</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-secondary);">
+                Join thousands of users who have simplified their video downloading experience
+            </p>
+            <div class="cta-buttons">
+                <a href="#install" class="btn btn-primary">🚀 Install Now</a>
+                <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/releases" class="btn btn-secondary">📥 Download Release</a>
+            </div>
         </section>
     </main>
-
     <footer>
         <div class="container">
             <div class="footer-links">
                 <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp">GitHub</a>
                 <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/issues">Issues</a>
+                <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/discussions">Discussions</a>
                 <a href="https://github.com/PratikKun/OpenXS-gui-for-yt_dlp/releases">Releases</a>
+                <a href="INSTALLATION.html">Documentation</a>
             </div>
-            <p>&copy; 2026 OpenXS Video Downloader. Open source project for Linux.</p>
+            <p style="color: var(--text-muted);">&copy; 2026 OpenXS Video Downloader. Open source project built with ❤️ for the community.</p>
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                Powered by yt-dlp • Built with Qt5 • Designed for everyone
+            </p>
         </div>
     </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                header.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Copy install command to clipboard
+        document.querySelector('.install-command').addEventListener('click', function() {
+            const text = this.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                // Show feedback
+                const original = this.style.background;
+                this.style.background = 'var(--success-color)';
+                this.style.color = 'white';
+                setTimeout(() => {
+                    this.style.background = original;
+                    this.style.color = 'var(--success-color)';
+                }, 1000);
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>

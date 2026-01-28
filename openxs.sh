@@ -497,6 +497,7 @@ public:
     
     QString getVideoURL() const { return field("url").toString(); }
     QString getVideoQuality() const { return field("quality").toString(); }
+    QString getVideoFormat() const { return field("videoFormat").toString(); }
     bool isPlaylistEnabled() const { return field("playlist").toBool(); }
     int getPlaylistStart() const { return field("playlistStart").toInt(); }
     int getPlaylistEnd() const { return field("playlistEnd").toInt(); }
@@ -547,12 +548,13 @@ class QualityPage : public QWizardPage {
 
 public:
     QualityPage(QWidget *parent = nullptr) : QWizardPage(parent) {
-        setTitle("Video Quality");
-        setSubTitle("Select the video quality you prefer.");
+        setTitle("Video Quality & Format");
+        setSubTitle("Select the video quality and container format you prefer.");
         
         QVBoxLayout *layout = new QVBoxLayout;
         
-        QLabel *label = new QLabel("Choose video quality:");
+        // Video Quality
+        QLabel *qualityLabel = new QLabel("Choose video quality:");
         qualityCombo = new QComboBox;
         qualityCombo->addItem("Best Available", "best");
         qualityCombo->addItem("4K (2160p)", "2160");
@@ -566,17 +568,39 @@ public:
         qualityCombo->addItem("Worst Available", "worst");
         qualityCombo->setCurrentIndex(3); // Default to 1080p
         
-        layout->addWidget(label);
+        layout->addWidget(qualityLabel);
         layout->addWidget(qualityCombo);
+        
+        // Video Format
+        QLabel *formatLabel = new QLabel("Choose video format:");
+        formatCombo = new QComboBox;
+        formatCombo->addItem("MP4 (Recommended)", "mp4");
+        formatCombo->addItem("MKV (High Quality)", "mkv");
+        formatCombo->addItem("AVI (Compatible)", "avi");
+        formatCombo->addItem("MOV (Apple)", "mov");
+        formatCombo->addItem("WebM (Web)", "webm");
+        formatCombo->addItem("FLV (Flash)", "flv");
+        formatCombo->setCurrentIndex(0); // Default to MP4
+        
+        layout->addWidget(formatLabel);
+        layout->addWidget(formatCombo);
+        
+        // Format description
+        QLabel *descLabel = new QLabel("MP4 is recommended for best compatibility across all devices and players.");
+        descLabel->setStyleSheet("color: gray; font-size: 10px; margin-top: 5px;");
+        layout->addWidget(descLabel);
+        
         layout->addStretch();
         
         setLayout(layout);
         
         registerField("quality", qualityCombo, "currentData");
+        registerField("videoFormat", formatCombo, "currentData");
     }
 
 private:
     QComboBox *qualityCombo;
+    QComboBox *formatCombo;
 };
 
 class PlaylistPage : public QWizardPage {
@@ -894,6 +918,7 @@ public:
         QString summary;
         summary += "URL: " + wizard->getVideoURL() + "\\n";
         summary += "Quality: " + wizard->getVideoQuality() + "\\n";
+        summary += "Format: " + wizard->getVideoFormat().toUpper() + "\\n";
         
         if (wizard->isPlaylistEnabled()) {
             summary += "Playlist: Yes";
@@ -966,8 +991,10 @@ private slots:
         QStringList args;
         args << wizard->getVideoURL();
         
-        // Quality
+        // Quality and Format
         QString quality = wizard->getVideoQuality();
+        QString videoFormat = wizard->getVideoFormat();
+        
         if (wizard->isAudioOnly()) {
             args << "--extract-audio";
             if (wizard->getAudioFormat() != "best") {
@@ -977,17 +1004,28 @@ private slots:
                 args << "--audio-quality" << wizard->getAudioQuality();
             }
         } else {
-            // Video download with proper format selection for video+audio
-            // Force merge to MP4 container to avoid WebM
-            args << "--merge-output-format" << "mp4";
+            // Video download with user-selected format
+            args << "--merge-output-format" << videoFormat;
+            
+            // Build format string based on selected container format
+            QString audioExt = "m4a";
+            if (videoFormat == "mkv") {
+                audioExt = "opus";
+            } else if (videoFormat == "webm") {
+                audioExt = "opus";
+            } else if (videoFormat == "avi") {
+                audioExt = "mp3";
+            }
             
             if (quality == "best") {
-                args << "-f" << "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best";
+                QString formatString = QString("bestvideo[ext=%1]+bestaudio[ext=%2]/bestvideo+bestaudio/best").arg(videoFormat, audioExt);
+                args << "-f" << formatString;
             } else if (quality == "worst") {
-                args << "-f" << "worstvideo[ext=mp4]+worstaudio[ext=m4a]/worstvideo+worstaudio/worst";
+                QString formatString = QString("worstvideo[ext=%1]+worstaudio[ext=%2]/worstvideo+worstaudio/worst").arg(videoFormat, audioExt);
+                args << "-f" << formatString;
             } else {
-                // For specific quality, prefer mp4 container with audio
-                QString formatString = QString("bestvideo[height<=%1][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=%1]+bestaudio/best[height<=%1]/best[height<=%1]").arg(quality);
+                // For specific quality with selected format
+                QString formatString = QString("bestvideo[height<=%1][ext=%2]+bestaudio[ext=%3]/bestvideo[height<=%1]+bestaudio/best[height<=%1]").arg(quality, videoFormat, audioExt);
                 args << "-f" << formatString;
             }
         }
