@@ -1,4 +1,4 @@
-# OpenXS Video Downloader
+# OpenXS Video Downloader Linux Only
 
 <div align="center">
 
