@@ -85,7 +85,7 @@ yt-dlp-xs
 **One-Click Install:**
 ```batch
 curl -O https://raw.githubusercontent.com/PratikKun/OpenXS-gui-for-yt_dlp/main/windows/install.ps1
-install.bat
+install.ps1
 ```
 
 **Requirements:** Windows 10/11 with Python 3.6+
